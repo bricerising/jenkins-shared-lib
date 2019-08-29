@@ -83,7 +83,7 @@ spec:
           container('docker') {
             script {
               Stage buildStage = new Stage()
-              buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
+              buildStage.add(new DockerBuildTool("docker.io/bricerisingslalom/${appName}", version, '-f docker/Dockerfile .'))
               buildStage.execute(steps)
 
             }
@@ -95,8 +95,7 @@ spec:
           container('docker') {
             script {
               Stage publishStage = new Stage()
-              publishStage.add(new DockerhubAuthTool(registryUrl))
-              publishStage.add(new DockerPublishTool(appName, version))
+              publishStage.add(new DockerPublishTool("docker.io/bricerisingslalom/${appName}", version))
               publishStage.execute(steps)
             }
           }
