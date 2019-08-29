@@ -8,7 +8,7 @@ import com.bricerising.tools.publish.DockerPublishTool
 
 CheckoutStage checkoutStage = new CheckoutStage(scm)
 
-def call(String appName, String version, String registryUrl) {
+def call(String appName, String version, String registryUrl = '') {
   podTemplate(label: "express-slave-${UUID.randomUUID().toString()}",
     containers: [
       containerTemplate(
@@ -44,7 +44,7 @@ def call(String appName, String version, String registryUrl) {
         stage('Build') {
           Stage buildStage = new Stage()
           buildStage.add(new NpmBuildTool())
-          buildStage.add(new DockerBuildTool(appName, version))
+          buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
           buildStage.execute(steps)
         }
       }
