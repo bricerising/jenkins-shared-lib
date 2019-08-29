@@ -2,7 +2,20 @@ package com.bricerising.stages
 
 import com.bricerising.tools.Tool
 
-public interface Stage extends Serializable {
-    private Queue<Tool> tools
-    public void execute(steps, String opts)
+public class Stage extends Serializable {
+    private LinkedList tools
+
+    Stage() {
+        this.tools = [] as LinkedList
+    }
+
+    public void add(Tool tool) {
+        this.tools.add(tool)
+    }
+
+    public void execute(steps) {
+        for(Tool tool: this.tools) {
+            tool.execute(steps)
+        }
+    }
 }

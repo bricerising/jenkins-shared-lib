@@ -12,8 +12,8 @@ public class DockerPublishTool implements Tool {
         this.image = image
     }
 
-    public void execute(steps, String opts) {
-        steps.sh "docker push ${opts} ${this.image}:${this.version}"
+    public void execute(steps) {
+        steps.sh "docker push ${this.image}:${this.version}"
     }
 
 }

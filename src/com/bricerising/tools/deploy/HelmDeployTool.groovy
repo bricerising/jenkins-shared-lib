@@ -6,13 +6,15 @@ public class HelmDeployTool implements Tool {
     
     private String namespace
     private String name
+    private String opts
 
-    HelmDeployTool(String name, String namespace) {
+    HelmDeployTool(String name, String namespace, String opts = '') {
         this.namespace = namespace
         this.name = name
+        this.opts = opts
     }
 
-    public void execute(steps, String opts) {
+    public void execute(steps) {
         steps.sh """
             set +e
 
@@ -49,7 +51,7 @@ EoF
             helm upgrade --install \
                 --tiller-namespace ${this.namespace} \
                 --namespace ${namespace} \
-                ${opts} \
+                ${this.opts} \
                 ${this.name}
         """
     }
