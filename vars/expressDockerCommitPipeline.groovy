@@ -8,15 +8,12 @@ import com.bricerising.tools.publish.DockerPublishTool
 
 def call(String appName, String version, String registryUrl = '') {
   CheckoutStage checkoutStage = new CheckoutStage(scm)
-  pipeline {
-    agent {
-      kubernetes {
-        defaultContainer 'jnlp'
-        yaml """
+  String podLabel = express-slave-${UUID.randomUUID().toString()}
+  String podYaml = """
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "express-slave-${UUID.randomUUID().toString()}"
+  name: ${podLabel}
 spec:
   volumes:
   - name: docker-sock
@@ -59,7 +56,13 @@ spec:
         cpu: .5
     securityContext:
       runAsUser: 10000
-          """
+                  """
+  pipeline {
+    agent {
+      kubernetes {
+        label podLabel
+        defaultContainer 'jnlp'
+        yaml podYaml
       }
     }
     stages {
