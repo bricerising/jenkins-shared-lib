@@ -21,7 +21,7 @@ spec:
       path: /var/run/docker.sock
   containers:
   - name: docker
-    image: docker:18.05.0-ce
+    image: bricerisingslalom/docker:18.05.0-ce
     command:
     - cat
     tty: true
