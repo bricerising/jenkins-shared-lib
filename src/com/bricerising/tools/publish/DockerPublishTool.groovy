@@ -1,6 +1,6 @@
 package com.bricerising.tools.deploy
 
-import com.tools.Tool
+import com.bricerising.tools.Tool
 
 public class DockerPublishTool implements Tool {
     
