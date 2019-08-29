@@ -9,7 +9,7 @@ import com.bricerising.tools.publish.DockerPublishTool
 CheckoutStage checkoutStage = new CheckoutStage(scm)
 
 def call(String appName, String version, String registryUrl = '') {
-  pipeline ('express-slave') {
+  pipeline {
     agent {
       kubernetes {
         defaultContainer 'jnlp'
