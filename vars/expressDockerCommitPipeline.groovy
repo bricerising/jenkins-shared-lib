@@ -6,20 +6,16 @@ import com.bricerising.tools.build.DockerBuildTool
 import com.bricerising.tools.auth.DockerhubAuthTool
 import com.bricerising.tools.publish.DockerPublishTool
 
-CheckoutStage checkoutStage = new CheckoutStage(scm)
-
 def call(String appName, String version, String registryUrl = '') {
+  CheckoutStage checkoutStage = new CheckoutStage(scm)
   pipeline {
     agent {
       kubernetes {
-        defaultContainer 'jnlp'
         yaml """
 apiVersion: v1
 kind: Pod
 metadata:
   name: "express-slave-${UUID.randomUUID().toString()}"
-  labels:
-    type: express-slave
 spec:
   volumes:
   - name: docker-sock
