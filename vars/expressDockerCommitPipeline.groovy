@@ -11,6 +11,7 @@ def call(String appName, String version, String registryUrl = '') {
   pipeline {
     agent {
       kubernetes {
+        defaultContainer 'jnlp'
         yaml """
 apiVersion: v1
 kind: Pod
