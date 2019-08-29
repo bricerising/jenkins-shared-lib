@@ -66,6 +66,7 @@ spec:
         label podLabel
         defaultContainer 'jnlp'
         yaml podYaml
+        inheritFrom 'default'
       }
     }
     stages {
@@ -78,14 +79,25 @@ spec:
           }
         }
       }
-      stage('Build') {
+      stage('Unit Test') {
         steps {
           container('node') {
             script {
+              Stage unitTest = new Stage()
+              unitTest.add(new NpmBuildTool())
+              unitTest.execute(steps)
+            }
+          }
+        }
+      }
+      stage('Build') {
+        steps {
+          container('docker') {
+            script {
               Stage buildStage = new Stage()
-              buildStage.add(new NpmBuildTool())
               buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
               buildStage.execute(steps)
+
             }
           }
         }
