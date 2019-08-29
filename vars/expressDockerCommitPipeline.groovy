@@ -8,7 +8,7 @@ import com.bricerising.tools.publish.DockerPublishTool
 
 def call(String appName, String version, String registryUrl = '') {
   CheckoutStage checkoutStage = new CheckoutStage(scm)
-  String podLabel = express-slave-${UUID.randomUUID().toString()}
+  String podLabel = "express-slave-${UUID.randomUUID().toString()}"
   String podYaml = """
 apiVersion: v1
 kind: Pod
