@@ -33,6 +33,7 @@ spec:
         memory: 128M
         cpu: .5
     securityContext:
+      fsGroup: 10000
       runAsUser: 10000
   - name: helm
     image: alpine/helm:2.14.1
@@ -44,6 +45,7 @@ spec:
         memory: 512M
         cpu: .5
     securityContext:
+      fsGroup: 10000
       runAsUser: 10000
   - name: node
     image: node:8-alpine
@@ -55,6 +57,7 @@ spec:
         memory: 512M
         cpu: .5
     securityContext:
+      fsGroup: 10000
       runAsUser: 10000
                   """
   pipeline {
