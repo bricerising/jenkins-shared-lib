@@ -2,7 +2,7 @@ package com.bricerising.stages
 
 import com.bricerising.tools.Tool
 
-public class Stage extends Serializable {
+public class Stage implements Serializable {
     private LinkedList tools
 
     Stage() {
