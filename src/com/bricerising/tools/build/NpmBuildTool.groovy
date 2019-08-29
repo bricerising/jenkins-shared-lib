@@ -1,6 +1,6 @@
 package com.bricerising.tools.build
 
-import com.tools.Tool
+import com.bricerising.tools.Tool
 
 public class NpmBuildTool implements Tool {
     
