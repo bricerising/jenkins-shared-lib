@@ -18,7 +18,7 @@ public class Stage implements Serializable {
         for(int i=0; i < this.tools.size(); i++) {
             this.tools.get(i).execute(steps)
         }
-        steps.sh 'chown -R 10000 .'
+        steps.sh 'chown -R $(whoami) .'
         steps.stash includes: '**', name: 'jobdir'
     }
 }

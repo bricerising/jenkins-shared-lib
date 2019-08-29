@@ -13,7 +13,7 @@ public class CheckoutStage implements Serializable {
 
     public void execute(steps) {
         this.scmVars = steps.checkout(this.scm)
-        steps.sh 'chown -R 10000 .'
+        steps.sh 'chown -R $(whoami) .'
         steps.stash includes: '**', name: 'jobdir'
     }
 
