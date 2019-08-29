@@ -15,8 +15,8 @@ public class Stage implements Serializable {
 
     public void execute(steps) {
         steps.unstash 'jobdir'
-        for(Tool tool: this.tools) {
-            tool.execute(steps)
+        for(int i=0; i < this.tools.size(); i++) {
+            this.tools.get(i).execute(steps)
         }
         steps.stash includes: '**', name: 'jobdir'
     }
