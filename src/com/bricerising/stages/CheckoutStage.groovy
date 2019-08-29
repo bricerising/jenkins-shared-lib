@@ -2,7 +2,7 @@ package com.bricerising.stages
 
 import java.util.TreeMap
 
-class CheckoutStage implements Serializable {
+public class CheckoutStage implements Serializable {
 
     def scm
     TreeMap scmVars
@@ -13,6 +13,7 @@ class CheckoutStage implements Serializable {
 
     public void execute(steps) {
         this.scmVars = steps.checkout(this.scm)
+        steps.sh 'chown -R 10000 .'
         steps.stash includes: '**', name: 'jobdir'
     }
 
