@@ -1,4 +1,4 @@
-package com.bricerising.tools.deploy
+package com.bricerising.tools.publish
 
 import com.bricerising.tools.Tool
 

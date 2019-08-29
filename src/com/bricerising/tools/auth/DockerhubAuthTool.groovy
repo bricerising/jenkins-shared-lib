@@ -1,5 +1,5 @@
 
-package com.bricerising.tools.build
+package com.bricerising.tools.auth
 
 import com.bricerising.tools.Tool
 
