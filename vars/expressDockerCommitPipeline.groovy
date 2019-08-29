@@ -69,26 +69,31 @@ spec:
       }
     }
     stages {
-      container('jnlp') {
-        stage('Checkout') {
-
-          checkoutStage.execute(steps)
+      stage('Checkout') {
+        steps {
+          container('jnlp') {
+            checkoutStage.execute(steps)
+          }
         }
       }
-      container('node') {
-        stage('Build') {
-          Stage buildStage = new Stage()
-          buildStage.add(new NpmBuildTool())
-          buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
-          buildStage.execute(steps)
+      stage('Build') {
+        steps {
+          container('node') {
+            Stage buildStage = new Stage()
+            buildStage.add(new NpmBuildTool())
+            buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
+            buildStage.execute(steps)
+          }
         }
       }
-      container('docker') {
-        stage('Publish') {
-          Stage publishStage = new Stage()
-          publishStage.add(new DockerhubAuthTool(registryUrl))
-          publishStage.add(new DockerPublishTool(appName, version))
-          publishStage.execute(steps)
+      stage('Publish') {
+        steps {
+          container('docker') {
+            Stage publishStage = new Stage()
+            publishStage.add(new DockerhubAuthTool(registryUrl))
+            publishStage.add(new DockerPublishTool(appName, version))
+            publishStage.execute(steps)
+          }
         }
       }
     }
