@@ -68,21 +68,21 @@ spec:
           """
       }
     }
-    container('jnlp') {
-      stage('Checkout') {
+    stage('Checkout') {
+      container('jnlp') {
         checkoutStage.execute(steps)
       }
     }
-    container('node') {
-      stage('Build') {
+    stage('Build') {
+      container('node') {
         Stage buildStage = new Stage()
         buildStage.add(new NpmBuildTool())
         buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
         buildStage.execute(steps)
       }
     }
-    container('docker') {
-      stage('Publish') {
+    stage('Publish') {
+      container('docker') {
         Stage publishStage = new Stage()
         publishStage.add(new DockerhubAuthTool(registryUrl))
         publishStage.add(new DockerPublishTool(appName, version))
