@@ -9,52 +9,84 @@ import com.bricerising.tools.publish.DockerPublishTool
 CheckoutStage checkoutStage = new CheckoutStage(scm)
 
 def call(String appName, String version, String registryUrl = '') {
-  podTemplate(label: "express-slave-${UUID.randomUUID().toString()}",
-    containers: [
-      containerTemplate(
-        name: 'docker',
-        image: 'docker:18.05.0-ce',
-        ttyEnabled: true,
-        command: 'cat'
-      ),
-      containerTemplate(
-        name: 'node',
-        image: 'node:8-alpine',
-        ttyEnabled: true,
-        command: 'cat'
-      )
-      containerTemplate(
-        name: 'helm',
-        image: 'alpine/helm:2.14.1',
-        ttyEnabled: true,
-        command: 'cat'
-      )
-    ],
-    volumes: [
-      hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
-    ]
-  ) {
-    node('express-slave') {
-      container('jnlp') {
-        stage('Checkout') {
-          checkoutStage.execute(steps)
-        }
+  pipeline ('express-slave') {
+    agent {
+      kubernetes {
+        defaultContainer 'jnlp'
+        yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "express-slave-${UUID.randomUUID().toString()}"
+  labels:
+    type: express-slave
+spec:
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
+  containers:
+  - name: docker
+    image: docker:18.05.0-ce
+    command:
+    - cat
+    tty: true
+    voumeMounts:
+    - mountPath: /var/run/docker.sock
+      name: docker-sock
+    resources:
+      limits:
+        memory: 128M
+        cpu: .5
+    securityContext:
+      fsGroup: 10000
+      runAsUser: 10000
+  - name: helm
+    image: alpine/helm:2.14.1
+    command:
+    - cat
+    tty: true
+    resources:
+      limits:
+        memory: 512M
+        cpu: .5
+    securityContext:
+      fsGroup: 10000
+      runAsUser: 10000
+  - name: node
+    image: node:8-alpine
+    command:
+    - cat
+    tty: true
+    resources:
+      limits:
+        memory: 512M
+        cpu: .5
+    securityContext:
+      fsGroup: 10000
+      runAsUser: 10000
+          """
       }
-      container('node') {
-        stage('Build') {
-          Stage buildStage = new Stage()
-          buildStage.add(new NpmBuildTool())
-          buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
-          buildStage.execute(steps)
-        }
+    }
+    container('jnlp') {
+      stage('Checkout') {
+        checkoutStage.execute(steps)
       }
-      container('docker') {
-        stage('Publish') {
-          Stage publishStage = new Stage()
-          publishStage.add(new DockerhubAuthTool(registryUrl))
-          publishStage.add(new DockerPublishTool(appName, version))
-          publishStage.execute(steps)
-        }
+    }
+    container('node') {
+      stage('Build') {
+        Stage buildStage = new Stage()
+        buildStage.add(new NpmBuildTool())
+        buildStage.add(new DockerBuildTool(appName, version, '-f docker/Dockerfile .'))
+        buildStage.execute(steps)
+      }
+    }
+    container('docker') {
+      stage('Publish') {
+        Stage publishStage = new Stage()
+        publishStage.add(new DockerhubAuthTool(registryUrl))
+        publishStage.add(new DockerPublishTool(appName, version))
+        publishStage.execute(steps)
       }
     }
   }
