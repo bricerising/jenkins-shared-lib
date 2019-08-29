@@ -14,8 +14,10 @@ public class Stage extends Serializable {
     }
 
     public void execute(steps) {
+        steps.unstash 'jobdir'
         for(Tool tool: this.tools) {
             tool.execute(steps)
         }
+        steps.stash includes: '**', name: 'jobdir'
     }
 }

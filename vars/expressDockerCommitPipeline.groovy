@@ -1,9 +1,12 @@
 import com.bricerising.stages.Stage
+import com.bricerising.stages.CheckoutStage
 import com.bricerising.tools.Tool
 import com.bricerising.tools.build.NpmBuildTool
 import com.bricerising.tools.build.DockerBuildTool
 import com.bricerising.tools.auth.DockerhubAuthTool
 import com.bricerising.tools.publish.DockerPublishTool
+
+CheckoutStage checkoutStage = new CheckoutStage(scm)
 
 def call(String appName, String version, String registryUrl) {
   podTemplate(label: "express-slave-${UUID.randomUUID().toString()}",
@@ -32,6 +35,11 @@ def call(String appName, String version, String registryUrl) {
     ]
   ) {
     node('express-slave') {
+      container('jnlp') {
+        stage('Checkout') {
+          checkoutStage.execute(steps)
+        }
+      }
       container('node') {
         stage('Build') {
           Stage buildStage = new Stage()
