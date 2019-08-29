@@ -95,8 +95,13 @@ spec:
           container('docker') {
             script {
               Stage publishStage = new Stage()
+              publishStage.add(new DockerhubAuthTool(registryUrl))
               publishStage.add(new DockerPublishTool("docker.io/bricerisingslalom/${appName}", version))
-              publishStage.execute(steps)
+              withCredentials([
+                  usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USER')
+              ]) {
+                publishStage.execute(steps)
+              }
             }
           }
         }
