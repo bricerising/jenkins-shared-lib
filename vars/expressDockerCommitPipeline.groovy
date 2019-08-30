@@ -50,7 +50,7 @@ spec:
       fsGroup: 10000
       runAsUser: 10000
   - name: helm
-    image: bricerisingslalom/helm:v2.9.1
+    image: bricerisingslalom/helm:v2.14.1
     command:
     - cat
     tty: true
