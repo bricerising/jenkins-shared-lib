@@ -15,7 +15,7 @@ public class HelmDeployTool implements Tool {
     }
 
     public void execute(steps) {
-        steps.sh """
+        String tillerServiceSetup = """
             set +e
 
             kubectl create namespace ${this.namespace}
@@ -42,6 +42,7 @@ subjects:
     namespace: ${this.namespace}
 EoF
         """
+        steps.sh tillerServiceSetup
         steps.sh """
             helm init --upgrade \
                 --service-account tiller \
