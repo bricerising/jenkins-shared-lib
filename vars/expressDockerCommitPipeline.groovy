@@ -121,25 +121,23 @@ spec:
         }
       }
       stage('Deploy') {
-        stage {
-          container('helm') {
-            script {
-              TreeMap scmVars = checkoutStage.getScmVars()
-              String tillerNamespace = "${APPLICATION_NAME}-${scmVars.GIT_BRANCH}"
-              Stage deployStage = new Stage()
-              if(mongo) {
-                deployStage.add(new HelmDeployTool(
-                  "mongo",
-                  tillerNamespace,
-                  "--set usePassword=false stable/mongodb"
-                ))
-              }
+        container('helm') {
+          script {
+            TreeMap scmVars = checkoutStage.getScmVars()
+            String tillerNamespace = "${APPLICATION_NAME}-${scmVars.GIT_BRANCH}"
+            Stage deployStage = new Stage()
+            if(mongo) {
               deployStage.add(new HelmDeployTool(
+                "mongo",
                 tillerNamespace,
-                tillerNamespace,
-                "--set catalog-service.deployment.tag=${npmBuildTool.getPackageVersion()} ./chart"
+                "--set usePassword=false stable/mongodb"
               ))
             }
+            deployStage.add(new HelmDeployTool(
+              tillerNamespace,
+              tillerNamespace,
+              "--set catalog-service.deployment.tag=${npmBuildTool.getPackageVersion()} ./chart"
+            ))
           }
         }
       }
