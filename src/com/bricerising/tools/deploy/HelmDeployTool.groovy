@@ -52,8 +52,9 @@ EoF
             helm upgrade --install \
                 --tiller-namespace ${this.namespace} \
                 --namespace ${namespace} \
-                ${this.opts} \
-                ${this.name}
+                ${this.name} \
+                ${this.opts}
+
         """
     }
 
