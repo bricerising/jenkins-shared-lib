@@ -5,8 +5,9 @@ import com.bricerising.tools.build.NpmBuildTool
 import com.bricerising.tools.build.DockerBuildTool
 import com.bricerising.tools.auth.DockerhubAuthTool
 import com.bricerising.tools.publish.DockerPublishTool
+import com.bricerising.tools.deploy.HelmDeployTool
 
-def call(String appName, String registryUrl = '') {
+def call(String appName, String registryUrl = '', boolean mongo = false) {
   CheckoutStage checkoutStage = new CheckoutStage(scm)
   Tool npmBuildTool = new NpmBuildTool()
   String podLabel = "express-slave-${UUID.randomUUID().toString()}"
@@ -38,6 +39,18 @@ spec:
       runAsUser: 10000
   - name: node
     image: bricerisingslalom/node:8-alpine
+    command:
+    - cat
+    tty: true
+    resources:
+      limits:
+        memory: 512M
+        cpu: .5
+    securityContext:
+      fsGroup: 10000
+      runAsUser: 10000
+  - name: helm
+    image: bricerisingslalom/helm:v2.9.1
     command:
     - cat
     tty: true
@@ -103,6 +116,29 @@ spec:
               ]) {
                 publishStage.execute(steps)
               }
+            }
+          }
+        }
+      }
+      stage('Deploy') {
+        stage {
+          container('helm') {
+            script {
+              TreeMap scmVars = checkoutStage.getScmVars()
+              String tillerNamespace = "${APPLICATION_NAME}-${scmVars.GIT_BRANCH}"
+              Stage deployStage = new Stage()
+              if(mongo) {
+                deployStage.add(new HelmDeployTool(
+                  "mongo",
+                  tillerNamespace,
+                  "--set usePassword=false stable/mongodb"
+                ))
+              }
+              deployStage.add(new HelmDeployTool(
+                tillerNamespace,
+                tillerNamespace,
+                "--set catalog-service.deployment.tag=${npmBuildTool.getPackageVersion()} ./chart"
+              ))
             }
           }
         }
