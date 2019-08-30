@@ -16,7 +16,7 @@ public class NpmBuildTool implements Tool {
         this.packageVersion = steps.sh(
             script: 'node -p "require(\'./package.json\').version"',
             returnStdout:true
-        )
+        ).trim()
     }
 
 }
