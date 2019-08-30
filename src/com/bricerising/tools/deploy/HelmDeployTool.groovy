@@ -18,20 +18,20 @@ public class HelmDeployTool implements Tool {
         String tillerServiceSetup = """
             set +e
 
-            kubectl create namespace ${this.namespace}
+            kubectl create namespace ${namespace}
             cat <<EoF | kubectl apply -f -
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tiller
-  namespace: ${this.namespace}
+  namespace: ${namespace}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: tiller
-  namespace: ${this.namespace}
+  namespace: ${namespace}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -39,17 +39,17 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: tiller
-    namespace: ${this.namespace}
+    namespace: ${namespace}
 EoF
         """
         String helmInitCommand = """
             helm init --upgrade \
                 --service-account tiller \
-                --tiller-namespace $(this.namespace}
+                --tiller-namespace $(namespace}
         """
         String helmInstallCommand = """
           helm upgrade --install \
-                --tiller-namespace ${this.namespace} \
+                --tiller-namespace ${namespace} \
                 --namespace ${namespace} \
                 ${this.opts} \
                 ${this.name}
