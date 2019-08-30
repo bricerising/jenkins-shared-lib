@@ -44,6 +44,7 @@ EoF
         """
         steps.sh """
             helm init --upgrade \
+                --wait \
                 --service-account tiller \
                 --tiller-namespace ${this.namespace}
         """
