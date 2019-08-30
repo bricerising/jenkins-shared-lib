@@ -125,7 +125,7 @@ spec:
           container('helm') {
             script {
               TreeMap scmVars = checkoutStage.getScmVars()
-              String tillerNamespace = "${APPLICATION_NAME}-${scmVars.GIT_BRANCH}"
+              String tillerNamespace = "${appName}-${scmVars.GIT_BRANCH}"
               Stage deployStage = new Stage()
               if(mongo) {
                 deployStage.add(new HelmDeployTool(
