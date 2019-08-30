@@ -139,6 +139,7 @@ spec:
                 tillerNamespace,
                 "--set catalog-service.deployment.tag=${npmBuildTool.getPackageVersion()} ./chart"
               ))
+              deployStage.execute(steps)
             }
           }
         }
