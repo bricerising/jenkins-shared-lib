@@ -12,7 +12,6 @@ public class NpmBuildTool implements Tool {
     public void execute(steps) {
         steps.sh("npm install")
         steps.sh("npm test")
-        steps.sh('ls')
         this.packageVersion = steps.sh(
             script: 'node -p "require(\'./package.json\').version"',
             returnStdout:true
