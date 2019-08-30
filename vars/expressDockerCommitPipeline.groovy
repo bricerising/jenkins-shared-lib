@@ -137,7 +137,7 @@ spec:
               deployStage.add(new HelmDeployTool(
                 tillerNamespace,
                 tillerNamespace,
-                "--set catalog-service.deployment.tag=${npmBuildTool.getPackageVersion()} ./chart"
+                "--set ${appName.replaceAll('-','')}.deployment.tag=${npmBuildTool.getPackageVersion()} ./chart"
               ))
               deployStage.execute(steps)
             }
