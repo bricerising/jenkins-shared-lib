@@ -7,7 +7,7 @@ import com.bricerising.tools.auth.DockerhubAuthTool
 import com.bricerising.tools.publish.DockerPublishTool
 import com.bricerising.tools.deploy.HelmDeployTool
 
-def call(String appName, boolean mongo = false, String registryUrl = 'docker.io/bricerisingslalom') {
+def call(String appName, boolean mongo = false, String registryUrl = '') {
   CheckoutStage checkoutStage = new CheckoutStage(scm)
   Tool npmBuildTool = new NpmBuildTool()
   String podLabel = "express-slave-${UUID.randomUUID().toString()}"
@@ -97,7 +97,7 @@ spec:
           container('docker') {
             script {
               Stage buildStage = new Stage()
-              buildStage.add(new DockerBuildTool("${registryUrl}/${appName}", npmBuildTool.getPackageVersion(), '-f docker/Dockerfile .'))
+              buildStage.add(new DockerBuildTool("${registryUrl}/bricerisingslalom/${appName}", npmBuildTool.getPackageVersion(), '-f docker/Dockerfile .'))
               buildStage.execute(steps)
 
             }
@@ -109,8 +109,8 @@ spec:
           container('docker') {
             script {
               Stage publishStage = new Stage()
-              publishStage.add(new DockerhubAuthTool("${registryUrl}/${appName}"))
-              publishStage.add(new DockerPublishTool("${registryUrl}/${appName}", npmBuildTool.getPackageVersion()))
+              publishStage.add(new DockerhubAuthTool(registryUrl))
+              publishStage.add(new DockerPublishTool("${registryUrl}/bricerisingslalom/${appName}", npmBuildTool.getPackageVersion()))
               withCredentials([
                   usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USER')
               ]) {
