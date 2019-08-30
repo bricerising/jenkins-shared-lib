@@ -42,19 +42,21 @@ subjects:
     namespace: ${this.namespace}
 EoF
         """
-        steps.sh tillerServiceSetup
-        steps.sh """
+        String helmInitCommand = """
             helm init --upgrade \
                 --service-account tiller \
                 --tiller-namespace $(this.namespace}
         """
-        steps.sh """
-            helm upgrade --install \
+        String helmInstallCommand = """
+          helm upgrade --install \
                 --tiller-namespace ${this.namespace} \
                 --namespace ${namespace} \
                 ${this.opts} \
                 ${this.name}
         """
+        steps.sh tillerServiceSetup
+        steps.sh helmInitCommand
+        steps.sh helmInstallCommand
     }
 
 }
