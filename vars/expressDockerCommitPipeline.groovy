@@ -97,7 +97,7 @@ spec:
           container('docker') {
             script {
               Stage buildStage = new Stage()
-              buildStage.add(new DockerBuildTool("${registryUrl}/bricerisingslalom/${appName}", npmBuildTool.getPackageVersion(), '-f docker/Dockerfile .'))
+              buildStage.add(new DockerBuildTool("docker.io/bricerisingslalom/${appName}", npmBuildTool.getPackageVersion(), '-f docker/Dockerfile .'))
               buildStage.execute(steps)
 
             }
@@ -110,7 +110,7 @@ spec:
             script {
               Stage publishStage = new Stage()
               publishStage.add(new DockerhubAuthTool(registryUrl))
-              publishStage.add(new DockerPublishTool("${registryUrl}/bricerisingslalom/${appName}", npmBuildTool.getPackageVersion()))
+              publishStage.add(new DockerPublishTool("docker.io/bricerisingslalom/${appName}", npmBuildTool.getPackageVersion()))
               withCredentials([
                   usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USER')
               ]) {
