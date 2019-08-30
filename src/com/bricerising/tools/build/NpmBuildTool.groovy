@@ -12,7 +12,7 @@ public class NpmBuildTool implements Tool {
     public void execute(steps) {
         steps.sh("npm install")
         steps.sh("npm test")
-        def packageJson = new JsonSlurper().parse(new File('package.json'))
+        def packageJson = new JsonSlurper().parse(new File('./package.json'))
         this.packageVersion = packageJson.version
     }
 
